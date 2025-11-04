@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/components/utils';
 
@@ -31,14 +32,14 @@ export function WorkshopSidebar({ title = "Firebolt", subtitle = "Workshop" }: W
     <div className="flex h-full w-64 flex-col bg-sidebar text-sidebar-foreground">
       {/* Header */}
       <div className="flex h-16 items-center gap-3 border-b border-sidebar-border px-6">
-        <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-firebolt text-white font-bold text-sm shadow-sm">
-          <svg 
-            className="h-5 w-5" 
-            viewBox="0 0 24 24" 
-            fill="currentColor"
-          >
-            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-          </svg>
+        <div className="flex h-8 w-8 items-center justify-center">
+          <Image 
+            src="/firebolt.png" 
+            alt="Firebolt Logo"
+            width={32}
+            height={32}
+            className="object-contain"
+          />
         </div>
         <div className="flex flex-col">
           <span className="font-semibold text-sm tracking-tight">{title}</span>

@@ -51,6 +51,9 @@ const config: Config = {
           border: "hsl(var(--sidebar-border))",
         },
         firebolt: "hsl(var(--firebolt-brand))",
+        red: {
+          600: "#f72a30",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
