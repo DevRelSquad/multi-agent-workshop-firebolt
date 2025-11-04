@@ -1,6 +1,12 @@
-export default function WorkshopLayout({ children }: { children: React.ReactNode }) {
+'use client';
+
+import { WorkshopLayout } from '@/components/layout/WorkshopLayout';
+
+export default function WorkshopLayoutPage({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen">{children}</div>
+    <WorkshopLayout>
+      {children}
+    </WorkshopLayout>
   );
 }
 
