@@ -203,7 +203,7 @@ export function WorkshopSidebar({ title = "FIREBOLT", subtitle = "" }: WorkshopS
                 />
               </div>
               <div className="text-xs font-semibold text-[#4da6ff] uppercase tracking-wider">
-                Google API Setup
+                Gemini & Gmail Setup
               </div>
             </div>
             <Link
