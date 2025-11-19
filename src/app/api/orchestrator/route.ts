@@ -30,7 +30,6 @@ export async function POST(request: NextRequest) {
       const result = await orchestrator.handleMultiStepQuery(query);
       return NextResponse.json({
         action: 'multi_step_execution',
-        query,
         ...result
       });
     }
