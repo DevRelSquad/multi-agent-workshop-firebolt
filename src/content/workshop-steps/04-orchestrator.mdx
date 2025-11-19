@@ -53,7 +53,9 @@ Let's implement the core `AnalyticsAgent` class with the `executeQuery` method.
 
 <Exercise title="Implement executeQuery method">
 
-Open `src/lib/agents/analytics.ts` and implement the `executeQuery` method that:
+**📝 File:** `src/lib/agents/analytics.ts`
+
+Look for the `TODO: Exercise 1` comment in the file. Implement the `executeQuery` method that:
 1. Takes a `queryType` parameter (string)
 2. Maps the type to a predefined SQL query
 3. Executes the query using the MCP client
@@ -164,7 +166,9 @@ Now let's create the HTTP API endpoint that exposes the Analytics Agent.
 
 <Exercise title="Implement the Analytics API route">
 
-Open `src/app/api/analytics/route.ts` and implement:
+**📝 File:** `src/app/api/analytics/route.ts`
+
+Look for the `TODO: Exercise 2` comment in the file. Implement:
 
 **POST endpoint:**
 1. Extract `queryType` from request body
@@ -289,7 +293,9 @@ Let's add a method to track month-over-month customer growth using SQL window fu
 
 <Exercise title="Implement getCustomerGrowth method">
 
-Add a `getCustomerGrowth()` method to the `AnalyticsAgent` class that:
+**📝 File:** `src/lib/agents/analytics.ts`
+
+Look for the `TODO: Exercise 3` comment in the file. Add a `getCustomerGrowth()` method to the `AnalyticsAgent` class that:
 1. Calculates unique customers per month using `DATE_TRUNC`
 2. Uses `LAG` window function to get previous month's count
 3. Calculates growth percentage: `((current - previous) / previous) * 100`
@@ -349,7 +355,9 @@ Add a conversion funnel analysis to track the user journey from view → cart �
 
 <Exercise title="Implement getConversionFunnel method">
 
-Add a `getConversionFunnel()` method that:
+**📝 File:** `src/lib/agents/analytics.ts`
+
+Look for the `TODO: Exercise 4` comment in the file. Add a `getConversionFunnel()` method that:
 1. Groups events by user_id and user_session
 2. Uses `MAX(CASE WHEN ...)` to flag if each event type occurred
 3. Calculates conversion rates at each funnel stage
