@@ -43,7 +43,7 @@ The orchestrator manages three agents:
 - **ReportAgent** - Partially implemented (generateReport needs completion)
 - **OrchestratorAgent** - This is what you'll build!
 
-## Exercise 1: Implement Intent Parsing (Already Implemented ✅)
+## Implement Intent Parsing
 
 The `parseIntent` method is **already implemented** in `src/lib/agents/orchestrator.ts`. It uses Gemini AI to classify user queries.
 
@@ -61,7 +61,7 @@ const intent = await orchestrator.parseIntent("Show me revenue and email to john
 
 ---
 
-## Exercise 2: Complete the Analytics Agent executeQuery (Still TODO)
+##Complete the Analytics Agent executeQuery(TODO)
 
 **📝 File:** `src/lib/agents/analytics.ts`
 
@@ -99,7 +99,7 @@ The `buildQueries` function already creates all SQL queries. You need to:
 
 ---
 
-## Exercise 3: Complete the Report Agent generateReport (TODO)
+## Complete the Report Agent generateReport
 
 **📝 File:** `src/lib/agents/report.ts`
 
@@ -127,7 +127,7 @@ Look for the `TASK 1` comment. The prompt builder is already implemented in `rep
 
 ---
 
-## Exercise 4: Implement Multi-Step Query Orchestration (TODO)
+## Implement Multi-Step Query Orchestration
 
 **📝 File:** `src/lib/agents/orchestrator.ts`
 
@@ -354,5 +354,3 @@ You've built a complete **Orchestrator Agent** that:
 4. **Modular design** makes it easy to add new agents
 
 Next step: Build the **Report Agent** to generate beautiful reports from analytics data!
-
-
