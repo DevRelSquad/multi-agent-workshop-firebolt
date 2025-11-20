@@ -147,7 +147,7 @@ const FireboltSetupSection = ({ setSelectedSection }: FireboltSetupSectionProps)
         <div className="p-6 bg-slate-800 rounded-lg mb-6 font-mono text-sm">
           <pre className="text-slate-200">
             <span className="text-slate-500">-- Test query to verify your setup</span>{'\n'}
-            <span className="text-amber-500">SELECT</span> <span className="text-amber-500">COUNT</span>(*) <span className="text-amber-500">AS</span> total_rows{'\n'}
+            <span className="text-amber-500">SELECT</span> <span className="text-amber-500"></span>* <span className="text-amber-500">AS</span> total_rows{'\n'}
             <span className="text-amber-500">FROM</span> your_sample_table{'\n'}
             <span className="text-amber-500">LIMIT</span> 10;
           </pre>
