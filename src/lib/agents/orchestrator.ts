@@ -73,7 +73,7 @@ export class OrchestratorAgent {
     const steps: any[] = [];
     
     try {
-      // TODO: Exercise 3 - Parse the user query to extract intent and entities (2-3 lines)
+      // TODO: Exercise 1 - Parse the user query to extract intent and entities (2-3 lines)
       // HINT: Use this.parseIntent(userQuery) and extract queryType and recipient from entities
       const intent = null; // Replace with parseIntent call
       const queryType = null; // Extract from intent.entities.query_type

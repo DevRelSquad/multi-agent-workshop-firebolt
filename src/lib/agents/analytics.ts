@@ -283,10 +283,30 @@ Performance Impact:
    * HINT: See Step 4 Exercise 4 in the tutorial for complete implementation
    */
   async getConversionFunnel(): Promise<QueryResult> {
-    // TODO: Implement conversion funnel analysis
-    throw new Error('TODO: Implement getConversionFunnel method');
-  }
-
+  const query = `
+    WITH funnel_data AS (
+      SELECT 
+        user_id,
+        user_session,
+        MAX(CASE WHEN event_type = 'view' THEN 1 ELSE 0 END) as viewed,
+        MAX(CASE WHEN event_type = 'cart' THEN 1 ELSE 0 END) as added_to_cart,
+        MAX(CASE WHEN event_type = 'purchase' THEN 1 ELSE 0 END) as purchased
+      FROM ${this.tableName}
+      WHERE event_time > CURRENT_DATE - INTERVAL '30 days'
+      GROUP BY user_id, user_session
+    )
+    SELECT 
+      SUM(viewed) as total_views,
+      SUM(added_to_cart) as total_cart_adds,
+      SUM(purchased) as total_purchases,
+      ROUND((SUM(added_to_cart)::NUMERIC / NULLIF(SUM(viewed), 0)) * 100, 2) as view_to_cart_rate,
+      ROUND((SUM(purchased)::NUMERIC / NULLIF(SUM(added_to_cart), 0)) * 100, 2) as cart_to_purchase_rate,
+      ROUND((SUM(purchased)::NUMERIC / NULLIF(SUM(viewed), 0)) * 100, 2) as overall_conversion_rate
+    FROM funnel_data
+  `;
+  
+  return await this.mcpClient.execute(query);
+}
   /**
    * Time-series revenue analysis
    * Shows revenue trends over time with growth metrics
