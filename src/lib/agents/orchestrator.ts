@@ -28,85 +28,143 @@ export class OrchestratorAgent {
     this.model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
   }
 
-  /**
-   * TODO: Exercise 1 - Implement parseIntent with Gemini
-   * 
-   * TASK: Use Gemini to analyze user queries and extract intent + entities
-   * 
-   * INSTRUCTIONS:
-   * 1. Create a prompt that explains the system capabilities (analytics, reports, email)
-   * 2. Ask Gemini to return JSON with: intent, entities, confidence
-   * 3. Support 4 intent types: analytics, report, email, multi_step
-   * 4. Support 5 query types: revenue, top_products, user_behavior, category_performance, brand_analysis
-   * 5. Extract time ranges and email addresses from the query
-   * 6. Use this.model.generateContent(prompt) to call Gemini
-   * 7. Parse the JSON response (handle markdown code blocks with regex /\{[\s\S]*\}/)
-   * 8. Return the IntentResult object
-   * 
-   * HINT: See Step 6 Exercise 1 in the tutorial for the full prompt structure
-   */
   async parseIntent(userQuery: string): Promise<IntentResult> {
-    // TODO: Implement intent parsing with Gemini
-    // Step 1: Create a comprehensive prompt explaining system capabilities
-    // Step 2: Call this.model.generateContent(prompt)
-    // Step 3: Extract JSON from response using regex
-    // Step 4: Parse and return IntentResult
-    throw new Error('TODO: Implement parseIntent method');
+  const prompt = `
+  Analyze this user query and classify the intent for an ecommerce analytics system:
+  Query: "${userQuery}"
+  
+  Context: The system can:
+  - Run analytics queries (revenue, top products, user behavior, category/brand analysis)
+  - Generate reports (summary or financial)
+  - Send emails with reports
+  - Handle multi-step queries that combine the above
+  
+  Respond in JSON format:
+  {
+    "intent": "analytics" | "report" | "email" | "multi_step",
+    "entities": {
+      "query_type": "revenue|top_products|user_behavior|category_performance|brand_analysis",
+      "time_range": "time period if specified",
+      "recipient": "email address if specified"
+    },
+    "confidence": 0.0 to 1.0
   }
-
-  /**
-   * TODO: Exercise 3 - Implement handleMultiStepQuery
-   * 
-   * TASK: Orchestrate complex workflows that coordinate multiple agents
-   * 
-   * INSTRUCTIONS:
-   * 1. Create a steps array to track each operation
-   * 2. Use regex to detect query types:
-   *    - hasRevenue: /revenue|sales|income|earnings|money/
-   *    - hasTopProducts: /top\s+products|best\s+sellers?|popular\s+items|trending/
-   *    - hasUserBehavior: /user\s+behavior|customer\s+behavior|user\s+activity|engagement/
-   *    - hasCategoryAnalysis: /categor(y|ies)|product\s+categories|category\s+performance/
-   *    - hasBrandAnalysis: /brand(s)?|brand\s+performance|brand\s+analysis/
-   *    - hasReport: /report|summary|generate|create\s+report/
-   *    - recipient: Extract email with /[\w.-]+@[\w.-]+\.[a-z]{2,}/
-   * 3. Execute analytics query based on detected intent
-   * 4. If hasReport or recipient, generate report (financial for revenue/category/brand, summary for others)
-   * 5. If recipient is present, send email with appropriate subject
-   * 6. Track each step with: step, action, output, status
-   * 7. Wrap in try-catch, return {success, totalSteps, steps}
-   * 
-   * HINT: See Step 6 Exercise 3 in the tutorial for complete implementation
-   */
+  
+  Examples:
+  - "Show me revenue" -> intent: analytics, query_type: revenue
+  - "Top selling products" -> intent: analytics, query_type: top_products
+  - "Generate report and email to john@example.com" -> intent: multi_step, recipient: john@example.com
+  - "How are users behaving?" -> intent: analytics, query_type: user_behavior
+  - "Best performing brands" -> intent: analytics, query_type: brand_analysis
+  `;
+  
+  const result = await this.model.generateContent(prompt);
+  const responseText = result.response.text();
+  
+  // Clean up the response to extract JSON
+  const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) {
+    throw new Error('Failed to parse intent from Gemini response');
+  }
+  
+  return JSON.parse(jsonMatch[0]);
+}
   async handleMultiStepQuery(userQuery: string) {
-    // TODO: Implement multi-step orchestration
-    // Step 1: Create steps array and extract intent signals with regex
-    // Step 2: Execute analytics query based on detected query type
-    // Step 3: Generate report if needed (check hasReport or recipient)
-    // Step 4: Send email if recipient is specified
-    // Step 5: Track each step and return result
-    throw new Error('TODO: Implement handleMultiStepQuery method');
+    const steps: any[] = [];
+    
+    try {
+      // TODO: Exercise 3 - Parse the user query to extract intent and entities (2-3 lines)
+      // HINT: Use this.parseIntent(userQuery) and extract queryType and recipient from entities
+      const intent = null; // Replace with parseIntent call
+      const queryType = null; // Extract from intent.entities.query_type
+      const recipient = null; // Extract from intent.entities.recipient
+      
+      let analyticsResult: any;
+      
+      // Step 1: Execute analytics if query type is present
+      if (queryType) {
+        const analytics = new AnalyticsAgent();
+        analyticsResult = await analytics.executeQuery(queryType);
+        steps.push({ 
+          step: 'analytics', 
+          action: `${queryType}_query`,
+          output: analyticsResult,
+          status: 'completed'
+        });
+      }
+      
+      // Step 2: Generate report if multi_step or report intent, or if email needed
+      if ((intent?.intent === 'multi_step' || intent?.intent === 'report' || recipient) && analyticsResult) {
+        const reportAgent = new ReportAgent(this.apiKey);
+        
+        // Choose report type based on query
+        const financialTypes = ['revenue', 'category_performance', 'brand_analysis'];
+        const reportType = queryType && financialTypes.includes(queryType) 
+          ? 'financial' 
+          : 'summary';
+        
+        const report = reportType === 'financial'
+          ? await reportAgent.generateFinancialReport(analyticsResult)
+          : await reportAgent.generateReport(analyticsResult, 'summary');
+        
+        steps.push({ 
+          step: 'report', 
+          action: `generate_${reportType}_report`,
+          output: report,
+          status: 'completed'
+        });
+        
+        // Step 3: Send email if recipient specified
+        if (recipient) {
+          const subjectMap: Record<string, string> = {
+            revenue: 'Revenue Analysis Report',
+            top_products: 'Top Products Performance Report',
+            user_behavior: 'User Behavior Insights Report',
+            category_performance: 'Category Performance Report',
+            brand_analysis: 'Brand Analysis Report'
+          };
+          
+          const subject = (queryType && subjectMap[queryType]) || 'Analytics Report';
+          const emailSent = await reportAgent.sendEmail(recipient, subject, report);
+          
+          steps.push({ 
+            step: 'email', 
+            action: 'send_report',
+            output: { recipient, subject, sent: emailSent, sandbox: true },
+            status: emailSent ? 'completed' : 'failed'
+          });
+        }
+      }
+      
+      return {
+        success: true,
+        totalSteps: steps.length,
+        steps
+      };
+    } catch (error) {
+      steps.push({
+        step: 'error',
+        action: 'orchestration_failed',
+        output: error instanceof Error ? error.message : 'Unknown error',
+        status: 'failed'
+      });
+      
+      return {
+        success: false,
+        totalSteps: steps.length,
+        steps,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
   }
 
-  /**
-   * TODO: Exercise 2 - Implement routeTask
-   * 
-   * TASK: Map intent results to appropriate agent types
-   * 
-   * INSTRUCTIONS:
-   * 1. Take IntentResult as input parameter
-   * 2. Check intent.intent property
-   * 3. Return 'analytics' for analytics intent
-   * 4. Return 'report' for report intent
-   * 5. Return 'email' for email intent
-   * 6. Return 'unknown' for anything else
-   * 
-   * HINT: This is a simple if/else or switch statement
-   */
-  routeTask(intent: IntentResult): AgentType {
-    // TODO: Implement task routing
-    // Map intent to agent type: analytics, report, email, or unknown
-    throw new Error('TODO: Implement routeTask method');
-  }
+ 
+ routeTask(intent: IntentResult): AgentType {
+  if (intent.intent === 'analytics') return 'analytics';
+  if (intent.intent === 'report') return 'report';
+  if (intent.intent === 'email') return 'email';
+  return 'unknown';
+}
 }
 
 

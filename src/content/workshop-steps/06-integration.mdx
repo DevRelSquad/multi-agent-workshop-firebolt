@@ -179,164 +179,51 @@ Look for the `TODO: Exercise 2` comment in the file. Implement the `routeTask` m
 
 Now for the main event: orchestrating complex workflows that coordinate multiple agents!
 
-<Exercise title="Implement handleMultiStepQuery method">
+<Exercise title="Complete the handleMultiStepQuery method">
 
 **📝 File:** `src/lib/agents/orchestrator.ts`
 
-Look for the `TODO: Exercise 3` comment in the file. Implement the `handleMultiStepQuery` method that orchestrates analytics → report → email workflows.
+Look for the `TODO: Exercise 3` comment in the file. The entire orchestration workflow is already implemented - you just need to complete **3 lines** at the top!
 
-**Requirements:**
+**🎯 Your Task :**
 
-**1. Intent Detection (Regex Patterns):**
-- Detect revenue queries: `/revenue|sales|income|earnings|money/`
-- Detect top products: `/top\s+products|best\s+sellers?|popular\s+items|trending/`
-- Detect user behavior: `/user\s+behavior|customer\s+behavior|engagement/`
-- Detect category analysis: `/categor(y|ies)|category\s+performance/`
-- Detect brand analysis: `/brand(s)?|brand\s+performance/`
-- Detect reports: `/report|summary|generate|create\s+report/`
-- Extract email: `/[\w.-]+@[\w.-]+\.[a-z]{2,}/`
+Replace these three lines:
+```typescript
+const intent = null; 
+const queryType = null; 
+const recipient = null; 
+```
 
-**2. Step Tracking:**
-- Create a `steps` array to track each operation
-- Each step has: `step`, `action`, `output`, `status`
+With the correct implementation:
+1. **Line 1:** Parse the intent using `this.parseIntent(userQuery)`
+2. **Line 2:** Extract query type from `intent.entities.query_type`
+3. **Line 3:** Extract recipient from `intent.entities.recipient`
 
-**3. Sequential Execution:**
-- **Step 1: Analytics** - Execute the detected query type
-- **Step 2: Report** - Generate report if requested or email is present
-- **Step 3: Email** - Send email if recipient is specified
+**✨ Everything else is done for you!** The code already:
+- ✅ Executes analytics queries
+- ✅ Generates financial/summary reports
+- ✅ Sends emails with proper subjects
+- ✅ Tracks steps and handles errors
 
-**4. Report Type Selection:**
-- Use `'financial'` for: revenue, category_performance, brand_analysis
-- Use `'summary'` for: top_products, user_behavior
 
-**5. Email Subject Mapping:**
-- Map query types to appropriate email subjects
 
-**6. Error Handling:**
-- Wrap everything in try-catch
-- On error, add error step with status 'failed'
-- Return success: false with error details
-
-<Hint title="Full implementation (click to reveal)">
-<CodeBlock language="typescript" code={`async handleMultiStepQuery(userQuery: string) {
-  const steps: any[] = [];
-  const lower = userQuery.toLowerCase();
-  
-  // Extract intent signals
-  const hasRevenue = /revenue|sales|income|earnings|money/.test(lower);
-  const hasTopProducts = /top\\s+products|best\\s+sellers?|popular\\s+items|trending/.test(lower);
-  const hasUserBehavior = /user\\s+behavior|customer\\s+behavior|user\\s+activity|engagement/.test(lower);
-  const hasCategoryAnalysis = /categor(y|ies)|product\\s+categories|category\\s+performance/.test(lower);
-  const hasBrandAnalysis = /brand(s)?|brand\\s+performance|brand\\s+analysis/.test(lower);
-  const hasReport = /report|summary|generate|create\\s+report/.test(lower);
-  const recipientMatch = lower.match(/[\\w.-]+@[\\w.-]+\\.[a-z]{2,}/);
-  const recipient = recipientMatch?.[0];
-
-  try {
-    let analyticsResult: any;
-    let queryType: string = '';
-    
-    // Step 1: Analytics query based on detected intent
-    if (hasRevenue) {
-      queryType = 'revenue';
-    } else if (hasTopProducts) {
-      queryType = 'top_products';
-    } else if (hasUserBehavior) {
-      queryType = 'user_behavior';
-    } else if (hasCategoryAnalysis) {
-      queryType = 'category_performance';
-    } else if (hasBrandAnalysis) {
-      queryType = 'brand_analysis';
-    }
-    
-    if (queryType) {
-      const analytics = new AnalyticsAgent();
-      analyticsResult = await analytics.executeQuery(queryType);
-      steps.push({ 
-        step: 'analytics', 
-        action: \`\${queryType}_query\`,
-        output: analyticsResult,
-        status: 'completed'
-      });
-      
-      // Step 2: Generate report if requested or if email is needed
-      if (hasReport || recipient) {
-        const geminiKey = process.env.GEMINI_API_KEY;
-        if (!geminiKey) {
-          throw new Error('GEMINI_API_KEY environment variable is required for report generation');
-        }
-        
-        const reportAgent = new ReportAgent(geminiKey);
-        
-        // Determine report type based on query
-        const reportType = hasRevenue || hasCategoryAnalysis || hasBrandAnalysis 
-          ? 'financial' 
-          : 'summary';
-        
-        let report: string;
-        if (reportType === 'financial') {
-          report = await reportAgent.generateFinancialReport(analyticsResult);
-        } else {
-          report = await reportAgent.generateReport(analyticsResult, 'summary');
-        }
-        
-        steps.push({ 
-          step: 'report', 
-          action: \`generate_\${reportType}_report\`,
-          output: report,
-          status: 'completed'
-        });
-        
-        // Step 3: Send email if recipient is specified
-        if (recipient) {
-          const subjectMap: Record<string, string> = {
-            revenue: 'Revenue Analysis Report',
-            top_products: 'Top Products Performance Report',
-            user_behavior: 'User Behavior Insights Report',
-            category_performance: 'Category Performance Report',
-            brand_analysis: 'Brand Analysis Report'
-          };
-          
-          const subject = subjectMap[queryType] || 'Analytics Report';
-          const emailSent = await reportAgent.sendEmail(recipient, subject, report);
-          
-          steps.push({ 
-            step: 'email', 
-            action: 'send_report',
-            output: { 
-              recipient, 
-              subject,
-              sent: emailSent,
-              sandbox: true
-            },
-            status: emailSent ? 'completed' : 'failed'
-          });
-        }
-      }
-    }
-    
-    return {
-      success: true,
-      totalSteps: steps.length,
-      steps
-    };
-  } catch (error) {
-    steps.push({
-      step: 'error',
-      action: 'orchestration_failed',
-      output: error instanceof Error ? error.message : 'Unknown error',
-      status: 'failed'
-    });
-    
-    return {
-      success: false,
-      totalSteps: steps.length,
-      steps,
-      error: error instanceof Error ? error.message : 'Unknown error'
-    };
-  }
-}`} />
+<Hint title="Solution (click to reveal)">
+<CodeBlock language="typescript" code={`// Replace these 3 lines:
+const intent = await this.parseIntent(userQuery);
+const queryType = intent.entities.query_type;
+const recipient = intent.entities.recipient;`} />
 </Hint>
+
+**That's it!** The rest of the method handles:
+- Analytics execution
+- Report generation (financial vs summary)
+- Email sending with proper subjects
+- Step tracking and error handling
+
+**Test queries to try:**
+- "Show me revenue and email to alice@example.com"
+- "Top selling products"
+- "Generate brand analysis report and send to manager@company.com"
 
 **Test queries:**
 - "Show revenue and send report to alice@example.com"

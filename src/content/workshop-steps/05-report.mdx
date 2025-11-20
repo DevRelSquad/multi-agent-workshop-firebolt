@@ -81,46 +81,18 @@ The method creates a comprehensive 4-section report:
 
 <Hint title="Implementation (click to reveal)">
 ```typescript
+// Import the prompt builder at the top of the file
+import { buildFinancialPrompt } from './reportPrompts';
+
 async generateFinancialReport(data: any): Promise<string> {
-  const prompt = `
-  Using this ecommerce financial data, create a comprehensive financial report with the following structure:
-  
-  1. EXECUTIVE SUMMARY
-     - Brief overview of key findings (2-3 sentences)
-     - Overall business health assessment
-     - Period covered by the data
-  
-  2. KEY METRICS
-     - Present as bullet points with actual numbers
-     - Include revenue, transactions, customer metrics
-     - Highlight conversion rates and averages
-     - Show growth rates if available
-  
-  3. TRENDS ANALYSIS
-     - Identify patterns in purchasing behavior
-     - Product, category, or brand performance insights
-     - Customer engagement and retention signals
-     - Time-based trends and anomalies
-  
-  4. RECOMMENDATIONS
-     - Actionable insights based on the data
-     - Strategic suggestions for revenue growth
-     - Product/category optimization opportunities
-     - Customer acquisition and retention strategies
-  
-  Data:
-  ${JSON.stringify(data, null, 2)}
-  
-  Style: Professional, executive-level, data-driven
-  Format: Use clear headings, bullet points, and specific numbers
-  Length: Comprehensive but focused (~500-600 words)
-  Tone: Confident, analytical, solution-oriented
-  `;
+  const prompt = buildFinancialPrompt(data);
 
   const result = await this.model.generateContent(prompt);
   return result.response.text();
 }
 ```
+
+**Note:** The actual prompt logic has been extracted to `src/lib/agents/reportPrompts.ts` for better organization. The `buildFinancialPrompt()` function creates the comprehensive 4-section report prompt with all the requirements listed above.
 </Hint>
 
 **Try in the Report Demo:**
@@ -153,28 +125,29 @@ The method automatically detects the environment:
 
 <Hint title="Implementation (click to reveal)">
 ```typescript
-async sendEmail(recipient: string, subject: string, body: string): Promise<boolean> {
-  // Preview email in console
-  console.log(`📧 Email Preview (Sandbox Mode):`);
-  console.log(`To: ${recipient}`);
-  console.log(`Subject: ${subject}`);
-  console.log(`Body:\n${body}`);
-  
+async sendEmail(
+  recipient: string, 
+  subject: string, 
+  body: string, 
+  reportType: 'summary' | 'detailed' | 'financial' = 'summary'
+): Promise<boolean> {
   try {
-    // In development/sandbox mode, just log and return success
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('✅ Email would be sent in production mode');
-      return true;
-    }
+    // Convert the report to HTML format
+    const htmlBody = generateReportHTML(body, reportType, 'Firebolt Analytics Database');
     
-    // In production, send via Gmail API
+    // Send via Gmail client (it handles sandbox vs real mode internally)
     const result = await this.gmailClient.send({ 
       recipient, 
       subject, 
-      body 
+      body: htmlBody
     });
     
-    console.log('✅ Email sent successfully');
+    if (result) {
+      console.log('✅ Email sent successfully (HTML format)');
+    } else {
+      console.log('⚠️ Email send returned false (check logs for details)');
+    }
+    
     return result;
   } catch (error) {
     console.error('❌ Email send failed:', error);
@@ -182,6 +155,8 @@ async sendEmail(recipient: string, subject: string, body: string): Promise<boole
   }
 }
 ```
+
+**Note:** The method now uses `generateReportHTML()` to convert reports to professional HTML format with branded footer, and delegates sandbox/production mode handling to the `GmailClient`.
 </Hint>
 
 **Test Email Delivery:**
@@ -249,8 +224,9 @@ Want to create your own report templates? Here's how:
 
 ### Add a New Report Type
 ```typescript
-async generateEcommerceInsights(data: any): Promise<string> {
-  const prompt = `
+// 1. First, add the prompt builder to reportPrompts.ts
+export function buildEcommerceInsightsPrompt(data: any) {
+  return `
   Analyze this ecommerce data and provide strategic business insights:
   
   ${JSON.stringify(data, null, 2)}
@@ -279,11 +255,20 @@ async generateEcommerceInsights(data: any): Promise<string> {
   Format: Clear sections with bullet points
   Style: Strategic, executive-level, actionable
   `;
+}
+
+// 2. Then, import and use it in report.ts
+import { buildEcommerceInsightsPrompt } from './reportPrompts';
+
+async generateEcommerceInsights(data: any): Promise<string> {
+  const prompt = buildEcommerceInsightsPrompt(data);
 
   const result = await this.model.generateContent(prompt);
   return result.response.text();
 }
 ```
+
+**Pattern:** Keep prompts in `reportPrompts.ts` as builder functions, then import and use them in `report.ts` with the single-line `generateContent` call.
 
 ### Create Custom Email Templates
 ```typescript

@@ -1,6 +1,78 @@
 import { FireboltMCPClient, QueryResult } from '@/lib/services/firebolt-mcp';
 import { GeminiService } from '@/lib/services/gemini';
 
+// Build pre-defined analytics queries for a given table name.
+function buildQueries(tableName: string): Record<string, string> {
+  return {
+    revenue: `
+      SELECT 
+        SUM(price) as total_revenue,
+        COUNT(*) as total_purchases,
+        COUNT(DISTINCT user_id) as unique_customers,
+        ROUND(SUM(price) / NULLIF(COUNT(DISTINCT user_id), 0), 2) as avg_revenue_per_customer
+      FROM ${tableName}
+      WHERE event_type = 'purchase' 
+      AND event_time > CURRENT_DATE - INTERVAL '30 days'
+    `,
+    top_products: `
+      SELECT 
+        product_id,
+        brand,
+        category_code,
+        COUNT(*) as purchase_count,
+        SUM(price) as total_revenue,
+        ROUND(AVG(price), 2) as avg_price
+      FROM ${tableName}
+      WHERE event_type = 'purchase'
+      AND event_time > CURRENT_DATE - INTERVAL '30 days'
+      GROUP BY product_id, brand, category_code
+      ORDER BY purchase_count DESC 
+      LIMIT 10
+    `,
+    user_behavior: `
+      SELECT 
+        event_type,
+        COUNT(*) as event_count,
+        COUNT(DISTINCT user_id) as unique_users,
+        COUNT(DISTINCT user_session) as unique_sessions
+      FROM ${tableName}
+      WHERE event_time > CURRENT_DATE - INTERVAL '7 days'
+      GROUP BY event_type
+      ORDER BY event_count DESC
+    `,
+    category_performance: `
+      SELECT 
+        category_code,
+        COUNT(*) as purchases,
+        SUM(price) as revenue,
+        ROUND(AVG(price), 2) as avg_price,
+        COUNT(DISTINCT user_id) as unique_customers
+      FROM ${tableName}
+      WHERE event_type = 'purchase'
+      AND category_code IS NOT NULL
+      AND event_time > CURRENT_DATE - INTERVAL '30 days'
+      GROUP BY category_code
+      ORDER BY revenue DESC
+      LIMIT 10
+    `,
+    brand_analysis: `
+      SELECT 
+        brand,
+        COUNT(*) as purchases,
+        SUM(price) as revenue,
+        ROUND(AVG(price), 2) as avg_price,
+        COUNT(DISTINCT user_id) as customers
+      FROM ${tableName}
+      WHERE event_type = 'purchase'
+      AND brand IS NOT NULL
+      AND event_time > CURRENT_DATE - INTERVAL '30 days'
+      GROUP BY brand
+      ORDER BY revenue DESC
+      LIMIT 10
+    `,
+  };
+}
+
 export class AnalyticsAgent {
   private mcpClient: FireboltMCPClient;
   private gemini: GeminiService;
@@ -76,12 +148,12 @@ export class AnalyticsAgent {
    * HINT: See Step 4 of the tutorial for full SQL query examples
    */
   async executeQuery(queryType: string): Promise<QueryResult> {
-    // TODO: Implement this method
-    // Step 1: Create queries object with 5 query types (revenue, top_products, user_behavior, category_performance, brand_analysis)
-    // Step 2: Validate queryType exists, throw error if unknown
-    // Step 3: Execute and return the query result
+    const queries = buildQueries(this.tableName);
+
+    
+
     throw new Error('TODO: Implement executeQuery method');
-  }
+}
 
   /**
    * TODO: Exercise 3 - Implement getCustomerGrowth method (OPTIONAL/ADVANCED)
@@ -103,20 +175,10 @@ export class AnalyticsAgent {
     throw new Error('TODO: Implement getCustomerGrowth method');
   }
 
-  /**
-   * ✅ COMPLETE: Optimize slow queries
-   * 
-   * Optimize queries by:
-   * - Leveraging FACT TABLE automatic indexing
-   * - Using aggregating indexes for frequent queries
-   * - Proper NULL handling to avoid empty results
-   * - Materialized aggregate tables for dashboards
-   * 
-   * NOTE: The ecommerce table is already a FACT TABLE with automatic optimizations:
-   * - Sparse indexes on ALL columns (no manual creation needed)
-   * - Fast partition pruning on event_time
-   * - Optimized for analytical aggregations (SUM, COUNT, AVG)
-   */
+
+
+
+
   async optimizeQuery(query: string): Promise<string> {
     // Optimization plan for ecommerce FACT TABLE
     const optimizationPlan = `

@@ -18,7 +18,7 @@ interface SidebarProps {
   subtitle?: string;
 }
 
-export function Sidebar({ items, title = "FIREBOLT", subtitle }: SidebarProps) {
+export function Sidebar({ items, title = "FIREBOLT", subtitle = "Powered by Gemini" }: SidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -27,16 +27,7 @@ export function Sidebar({ items, title = "FIREBOLT", subtitle }: SidebarProps) {
       <div className="flex flex-col gap-3 px-4 pt-6 pb-2">
         {/* Logo Row */}
         <div className="flex items-center justify-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center bg-white rounded-md">
-            {/* <Image 
-              src="/google.png" 
-              alt="Google Logo"
-              width={20}
-              height={20}
-              className="object-contain"
-            /> */}
-          </div>
-          <span className="text-[#7a7a7a] text-lg font-bold">×</span>
+          
           <div className="flex h-8 w-8 items-center justify-center bg-white rounded-md">
             <Image 
               src="/firebolt.png" 
@@ -59,7 +50,7 @@ export function Sidebar({ items, title = "FIREBOLT", subtitle }: SidebarProps) {
         </div>
         {/* Title */}
         <div className="flex flex-col items-center text-center">
-          <span className="font-semibold text-sm tracking-tight text-white">Google for Developers × Firebolt × DevRelSquad</span>
+          <span className="font-semibold text-sm tracking-tight text-white">Firebolt × DevRelSquad</span>
           {subtitle && (
             <span className="text-xs text-[#b5b5b5]">{subtitle}</span>
           )}

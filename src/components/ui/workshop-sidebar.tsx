@@ -27,7 +27,7 @@ interface WorkshopSidebarProps {
   subtitle?: string;
 }
 
-export function WorkshopSidebar({ title = "FIREBOLT", subtitle = "" }: WorkshopSidebarProps) {
+export function WorkshopSidebar({ title = "FIREBOLT", subtitle = "Powered by Gemini" }: WorkshopSidebarProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const section = searchParams.get('section');
@@ -38,10 +38,10 @@ export function WorkshopSidebar({ title = "FIREBOLT", subtitle = "" }: WorkshopS
       <div className="flex flex-col gap-3 px-4 pt-6 pb-2">
         {/* Logo Row */}
         <div className="flex items-center justify-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center bg-white rounded-md">
+         
             
-          </div>
-          <span className="text-[#7a7a7a] text-lg font-bold">×</span>
+         
+         
          <div className="flex h-8 w-8 items-center justify-center bg-white rounded-md">
                      <Image 
                        src="/firebolt.png" 
@@ -64,7 +64,7 @@ export function WorkshopSidebar({ title = "FIREBOLT", subtitle = "" }: WorkshopS
         </div>
         {/* Title */}
         <div className="flex flex-col items-center text-center">
-          <span className="font-semibold text-sm tracking-tight text-white">Google for Developers × Firebolt × DevRelSquad</span>
+          <span className="font-semibold text-sm tracking-tight text-white">Firebolt × DevRelSquad</span>
           {subtitle && (
             <span className="text-xs text-[#b5b5b5]">{subtitle}</span>
           )}
@@ -194,13 +194,7 @@ export function WorkshopSidebar({ title = "FIREBOLT", subtitle = "" }: WorkshopS
           <div className="pt-4">
             <div className="flex items-center gap-2 mb-2 px-3">
               <div className="flex h-4 w-4 items-center justify-center bg-[#4da6ff] rounded">
-                <Image 
-                  src="/google.png" 
-                  alt="Google"
-                  width={12}
-                  height={12}
-                  className="object-contain"
-                />
+                
               </div>
               <div className="text-xs font-semibold text-[#4da6ff] uppercase tracking-wider">
                 Gemini & Gmail Setup
