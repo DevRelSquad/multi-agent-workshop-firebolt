@@ -171,9 +171,34 @@ export class AnalyticsAgent {
    * HINT: See Step 4 Exercise 3 in the tutorial for complete implementation
    */
   async getCustomerGrowth(): Promise<QueryResult> {
-    // TODO: Implement customer growth analysis with window functions
-    throw new Error('TODO: Implement getCustomerGrowth method');
-  }
+  const query = `
+    WITH monthly_customers AS (
+      SELECT
+        DATE_TRUNC('month', event_time) as month,
+        COUNT(DISTINCT user_id) as new_customers
+      FROM ${this.tableName}
+      WHERE event_type = 'purchase'
+      AND event_time > CURRENT_DATE - INTERVAL '12 months'
+      GROUP BY DATE_TRUNC('month', event_time)
+    )
+    SELECT
+      month,
+      new_customers,
+      LAG(new_customers) OVER (ORDER BY month) as prev_month_customers,
+      CASE 
+        WHEN LAG(new_customers) OVER (ORDER BY month) = 0 OR LAG(new_customers) OVER (ORDER BY month) IS NULL
+        THEN NULL
+        ELSE ROUND(
+          ((new_customers - LAG(new_customers) OVER (ORDER BY month))::NUMERIC 
+          / LAG(new_customers) OVER (ORDER BY month)) * 100, 2
+        )
+      END as growth_pct
+    FROM monthly_customers
+    ORDER BY month DESC
+  `;
+  
+  return await this.mcpClient.execute(query);
+}
 
 
 
