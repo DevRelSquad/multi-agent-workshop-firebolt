@@ -224,22 +224,7 @@ const FireboltServiceAccountSection = ({ setSelectedSection }: FireboltServiceAc
       </Card>
 
       {/* Next Steps */}
-      <div className="mt-8 flex flex-wrap gap-4 justify-center">
-        <button
-          onClick={() => setSelectedSection('create-engine')}
-          className="px-6 py-3 bg-[#7AD2A2] hover:bg-[#69c190] text-[#1e1f22] rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2"
-        >
-          <Database className="w-5 h-5" />
-          Next: Create Engine
-        </button>
-        <button
-          onClick={() => setSelectedSection('setup')}
-          className="px-6 py-3 bg-white hover:bg-gray-50 text-[#357266] border-2 border-[#357266] rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2"
-        >
-          <Settings className="w-5 h-5" />
-          Back to Setup Guide
-        </button>
-      </div>
+      
     </div>
   );
 };
