@@ -18,11 +18,12 @@ export default function Home() {
           
           
           <Tabs defaultValue="orchestrator" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
+            <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
               <TabsTrigger value="orchestrator">Orchestrator</TabsTrigger>
               <TabsTrigger value="analytics">Analytics</TabsTrigger>
               <TabsTrigger value="report">Report</TabsTrigger>
               <TabsTrigger value="workshop">Workshop</TabsTrigger>
+              <TabsTrigger value="links">Links</TabsTrigger>
             </TabsList>
             
             <TabsContent value="orchestrator" className="mt-6">
@@ -49,6 +50,50 @@ export default function Home() {
                 >
                   Go to Workshop →
                 </Link>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="links" className="mt-6">
+              <div className="max-w-3xl space-y-4">
+                <h2 className="text-2xl font-semibold mb-2">Useful Links</h2>
+                <p className="mb-4 text-gray-600">Quick access to workshop resources and feedback forms.</p>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <a href="https://ln.run/SqyHF" target="_blank" rel="noreferrer" className="p-4 rounded-lg border hover:shadow-md transition-shadow bg-white">
+                    <h3 className="font-semibold">Replit Workshop (Test)</h3>
+                    <span className="sr-only">https://ln.run/SqyHF</span>
+                  </a>
+
+                  <a href="https://ln.run/ZQ2M_" target="_blank" rel="noreferrer" className="p-4 rounded-lg border hover:shadow-md transition-shadow bg-white">
+                    <h3 className="font-semibold">Replit Workshop (Exercises)</h3>
+                    <span className="sr-only">https://ln.run/ZQ2M_</span>
+                  </a>
+
+                  <a href="https://ln.run/Qv9f6" target="_blank" rel="noreferrer" className="p-4 rounded-lg border hover:shadow-md transition-shadow bg-white">
+                    <h3 className="font-semibold">Online Challenge</h3>
+                    <span className="sr-only">https://ln.run/Qv9f6</span>
+                  </a>
+
+                  <a href="https://chat.whatsapp.com/JHnKKc61fsg7LHEBiO6QbH" target="_blank" rel="noreferrer" className="p-4 rounded-lg border hover:shadow-md transition-shadow bg-white">
+                    <h3 className="font-semibold">Join DevRelSquad Community</h3>
+                    <span className="sr-only">WhatsApp invite link</span>
+                  </a>
+
+                  <a href="https://ln.run/g7juZ" target="_blank" rel="noreferrer" className="p-4 rounded-lg border hover:shadow-md transition-shadow bg-white">
+                    <h3 className="font-semibold">Deployed Agentic App</h3>
+                    <span className="sr-only">https://ln.run/g7juZ</span>
+                  </a>
+
+                  <a href="https://www.goavo.ai/events/forms/fillup?id=6901bb8a73e7ff29bc3dbf80" target="_blank" rel="noreferrer" className="p-4 rounded-lg border hover:shadow-md transition-shadow bg-white">
+                    <h3 className="font-semibold">Xcaliber feedback form</h3>
+                    <span className="sr-only">Xcaliber feedback form</span>
+                  </a>
+
+                  <a href="https://www.goavo.ai/events/forms/fillup?id=6901bd2873e7ff29bc3dbf83" target="_blank" rel="noreferrer" className="p-4 rounded-lg border hover:shadow-md transition-shadow bg-white">
+                    <h3 className="font-semibold">Pibit feedback form</h3>
+                    <span className="sr-only">Pibit feedback form</span>
+                  </a>
+                </div>
               </div>
             </TabsContent>
           </Tabs>

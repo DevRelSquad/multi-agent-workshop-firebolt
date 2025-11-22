@@ -19,6 +19,17 @@ import { Checkpoint } from '@/components/workshop/Checkpoint';
    <p style={{margin: '0.5rem 0 0'}}><strong>If you're running this workshop on Replit, add your environment credentials (for example: <code>GEMINI_API_KEY</code>, Firebolt and Gmail credentials) to Replit Secrets, then fully relaunch the Replit instance (stop and start / restart the repl). Without this, environment variables won't load and the app may not work correctly.</strong></p>
 </div>
 
+{/* Replit sometimes doesn't read .env files reliably; provide explicit override guidance */}
+<div style={{border: '1px solid #e5e7eb', background: '#f8fafc', padding: '0.75rem', borderRadius: '6px', marginBottom: '1rem'}}>
+   <strong>Replit .env troubleshoot:</strong>
+   <p style={{margin: '0.25rem 0 0'}}>If Replit does not pick up values from a local <code>.env.local</code>, explicitly add or override these flags in Replit Secrets to force the intended mode:</p>
+   <ul style={{margin: '0.5rem 0 0 1rem'}}>
+      <li><code>FIREBOLT_ENABLED=false</code> (or <code>true</code> for production)</li>
+      <li><code>GMAIL_ENABLED=false</code> (or <code>true</code> for production)</li>
+   </ul>
+   <p style={{margin: '0.5rem 0 0'}}><em>After updating secrets, fully stop and start the Replit instance so the new values are loaded.</em></p>
+</div>
+
 # Workshop Environment Setup
 
 Set up your local development environment for the multi-agent workshop.
