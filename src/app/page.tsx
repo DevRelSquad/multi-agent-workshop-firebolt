@@ -84,14 +84,9 @@ export default function Home() {
                     <span className="sr-only">https://ln.run/g7juZ</span>
                   </a>
 
-                  <a href="https://www.goavo.ai/events/forms/fillup?id=6901bb8a73e7ff29bc3dbf80" target="_blank" rel="noreferrer" className="p-4 rounded-lg border hover:shadow-md transition-shadow bg-white">
-                    <h3 className="font-semibold">Xcaliber feedback form</h3>
-                    <span className="sr-only">Xcaliber feedback form</span>
-                  </a>
-
-                  <a href="https://www.goavo.ai/events/forms/fillup?id=6901bd2873e7ff29bc3dbf83" target="_blank" rel="noreferrer" className="p-4 rounded-lg border hover:shadow-md transition-shadow bg-white">
-                    <h3 className="font-semibold">Pibit feedback form</h3>
-                    <span className="sr-only">Pibit feedback form</span>
+                  <a href="https://www.goavo.ai/events/forms/fillup?id=6901becf73e7ff29bc3dbf86" target="_blank" rel="noreferrer" className="p-4 rounded-lg border hover:shadow-md transition-shadow bg-white">
+                    <h3 className="font-semibold">Multi-Agent AI Workshop feedback form</h3>
+                    <span className="sr-only">Multi-Agent AI Workshop feedback form</span>
                   </a>
                 </div>
               </div>
