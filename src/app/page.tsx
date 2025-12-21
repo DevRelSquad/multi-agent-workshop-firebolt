@@ -84,7 +84,7 @@ export default function Home() {
                     <span className="sr-only">https://ln.run/g7juZ</span>
                   </a>
 
-                  <a href="https://www.goavo.ai/events/forms/fillup?id=6901becf73e7ff29bc3dbf86" target="_blank" rel="noreferrer" className="p-4 rounded-lg border hover:shadow-md transition-shadow bg-white">
+                  <a href="https://www.goavo.ai/events/forms/fillup?id=6901c10373e7ff29bc3dbf89" target="_blank" rel="noreferrer" className="p-4 rounded-lg border hover:shadow-md transition-shadow bg-white">
                     <h3 className="font-semibold">Multi-Agent AI Workshop feedback form</h3>
                     <span className="sr-only">Multi-Agent AI Workshop feedback form</span>
                   </a>
