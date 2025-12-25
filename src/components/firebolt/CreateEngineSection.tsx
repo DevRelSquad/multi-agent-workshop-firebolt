@@ -34,13 +34,19 @@ const CreateEngineSection = ({ setSelectedSection }: CreateEngineSectionProps) =
       imageUrl: "https://i.postimg.cc/tCVdhRQM/Screenshot-2025-09-12-015030.png",
       imageAlt: "Create new engine"
     },
-    {
-      label: 'Enter a name for your engine (e.g., "demo_engine").',
-      imageUrl: null,
+     {
+      label: 'Select the engine node type: Choose "Small" for lightweight queries and testing, or the default "my_engine" for standard production workloads.',
+      imageUrl: "https://i.postimg.cc/9FVcb8qd/Screenshot-2025-12-26-003217.png",
       imageAlt: null
     },
     {
-      label: 'Open "Advanced settings" if needed and configure options.',
+      label: 'Enter a name for your engine (e.g., "demo_engine") if creating new engine',
+      imageUrl: "https://i.postimg.cc/0N6vjhLz/Screenshot-2025-12-26-003709.png",
+      imageAlt: null
+    },
+   
+    {
+      label: 'Open "Advanced settings" if needed and configure additional options like auto-suspend timeout and warmup method.',
       imageUrl: "https://i.postimg.cc/6pMdK8dT/Screenshot-2025-09-12-015616.png",
       imageAlt: "Advanced settings"
     },
